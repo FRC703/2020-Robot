@@ -1,4 +1,4 @@
-# 2020-Robot
+# Phoenix2020
 
 [![Travis (.org)](https://img.shields.io/travis/FRC703/2020-Robot?label=CI%20Build&logo=Travis&style=for-the-badge)](https://travis-ci.org/FRC703/2020-Robot)
 
