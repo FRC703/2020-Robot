@@ -1,29 +1,37 @@
 import wpilib
+import wpilib.drive
 import magicbot
+import math
+from limelight import limelight
 
+import ctre
 import rev
 
-from components.drivetrain import Drivetrain
+from components.intake import Intake
+from components.shooter import Shooter
+from state_machines.shoot import Shoot
+
+from networktables import NetworkTables
 
 class Robot(magicbot.MagicRobot):
 
-    train: Drivetrain
+    intake: Intake
+    shooter: Shooter
+    shoot_procedure: Shoot
 
-    def setupComponents(self):
-        motorl1 = rev.CANSparkMax(5, rev.MotorType.kBrushless)
-        motorl2 = rev.CANSparkMax(6, rev.MotorType.kBrushless)
-        motorr1 = rev.CANSparkMax(7, rev.MotorType.kBrushless)
-        motorr2 = rev.CANSparkMax(8, rev.MotorType.kBrushless)
-
-        motorl2.follow(motorl1)
-        motorr2.follow(motorr1)
-        self.train_dt = wpilib.DifferentialDrive(motorl1, motorr1)
+    def createObjects(self):
+        self.intake_motor = ctre.TalonSRX(10)
+        self.shooter_motor = rev.CANSparkMax(7, rev.MotorType.kBrushless)
+        self.shooter_motor.setOpenLoopRampRate(1)
 
         self.joystick = wpilib.Joystick(0)
-
+        
 
     def teleopPeriodic(self):
-        self.train.drive(self.joystick.getRawInput(0), self.joystick.getRawInput(1))
+        self.intake.intake(self.joystick.getRawAxis(3))
+        if self.joystick.getRawButton(1):
+            # self.shoot_procedure.fire()
+            self.shooter.shoot()
 
 if __name__ == "__main__":
     wpilib.run(Robot)
