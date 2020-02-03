@@ -3,3 +3,9 @@ include
 lib
 lib64
 pyvenv.cfg
+.installer_config
+.deploy_cfg
+__pycache__
+opkg_cache
+pip_cache
+Scripts
