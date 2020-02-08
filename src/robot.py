@@ -22,16 +22,21 @@ class Robot(magicbot.MagicRobot):
 
     def createObjects(self):
         self.intake_motor = ctre.TalonSRX(10)
-        self.shooter_motor = PIDSparkMax(7)
+        self.shooter_motor = PIDSparkMax(9)
+        self.intake_arm_motor = PIDSparkMax(7)
         # self.shooter_motor.setOpenLoopRampRate(1)
 
         self.joystick = wpilib.Joystick(0)
 
     def teleopPeriodic(self):
-        self.intake.intake(self.joystick.getRawAxis(3))
+        # self.intake.intake(self.joystick.getRawAxis(3))
         if self.joystick.getRawButton(1):
             # self.shoot_procedure.fire()
             self.shooter.shoot()
+        if self.joystick.getRawButton(11):
+            self.intake.lower()
+        elif self.joystick.getRawButton(9):
+            self.intake.lift()
 
 
 if __name__ == "__main__":

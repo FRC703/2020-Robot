@@ -10,6 +10,7 @@ class PIDSparkMax:
     kFF = 0.000015
     kMinOutput = -1
     kMaxOutput = 1
+    control_mode = ControlType.kVelocity
 
     def __init__(self, canid):
         self.motor = CANSparkMax(canid, MotorType.kBrushless)
@@ -22,12 +23,9 @@ class PIDSparkMax:
         self._motor_pid.setFF(self.kFF)
         self._motor_pid.setOutputRange(self.kMinOutput, self.kMaxOutput)
 
-    def set(self, rpm):
-        self._motor_pid.setReference(rpm, ControlType.kVelocity)
+    def set(self, setpoint):
+        self._motor_pid.setReference(setpoint, self.control_mode)
 
     @property
     def rpm(self):
         return self.motor.getEncoder().getVelocity()
-
-    def stop(self):
-        self._motor_pid.setReference(0, ControlType.kVelocity)
