@@ -3,9 +3,9 @@ from rev import CANSparkMax, ControlType, MotorType
 
 class PIDSparkMax:
 
-    kP = .035 # 6e-2
-    kI = .01 # 1e-3
-    kD = .001 # 0.2
+    kP = 0.035  # 6e-2
+    kI = 0.01  # 1e-3
+    kD = 0.001  # 0.2
     kIz = 0.001
     kFF = 0.000015
     kMinOutput = -1
