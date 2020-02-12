@@ -10,7 +10,7 @@ class IntakeLiftRoutine(StateMachine):
     def arm_down(self):
         self.intake.run_wheels()
         self.intake.lift()
-        if self.intake.arm_motor.motor.getEncoder().getPosition() < 10:
+        if self.intake.arm_motor.motor.getEncoder().getPosition() > 20:
             self.next_state("wheels_off")
 
     @state()

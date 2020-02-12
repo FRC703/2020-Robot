@@ -11,8 +11,8 @@ class Intake:
     motor: ctre.TalonSRX
     arm_motor: PIDSparkMax
     intake_speed = 0
-    intake_speed_in = tunable(-0.6)
-    intake_speed_out = tunable(0.1)
+    intake_speed_in = -0.6
+    intake_speed_out = 0.1
     intake_up = True
     intake_arm_down_position = 25 * 1.4  # Temporary to figure out the direction
 

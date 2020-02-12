@@ -14,24 +14,36 @@ from components.drivetrain import Drivetrain
 
 from state_machines.shoot import Shoot
 from state_machines.intake_routine import IntakeRoutine
+from state_machines.intake_lift_routine import IntakeLiftRoutine
 
-
+from wpilib import SmartDashboard
 from networktables import NetworkTables
 
 
 class Robot(magicbot.MagicRobot):
-
-    intake: Intake
-    # shooter: Shooter
-    drivetrain: Drivetrain
-    # shoot_procedure: Shoot
+    # State Machines
     intake_sm: IntakeRoutine
+    # intake_lift_sm: IntakeLiftRoutine
+    shoot_sm: Shoot
+
+    # Components
+    intake: Intake
+    shooter: Shooter
+    drivetrain: Drivetrain
+
+
+    # Dashboard config
+    tank_drive = magicbot.tunable(False)
+    twist = magicbot.tunable(True)
+
+    def shuffleboardInit(self):
+        pass
 
     def createObjects(self):
         self.intake_motor = ctre.TalonSRX(10)
-        # self.shooter_motor = PIDSparkMax(9)
+        self.shooter_motor = PIDSparkMax(16)
         self.intake_arm_motor = PIDSparkMax(8)
-        # self.shooter_motor.setOpenLoopRampRate(1)
+        self.shooter_motor.motor.setOpenLoopRampRate(1)
         self.drivetrain_motorr1 = rev.CANSparkMax(5, rev.MotorType.kBrushless)
         self.drivetrain_motorr2 = rev.CANSparkMax(13, rev.MotorType.kBrushless)
         self.drivetrain_motorl1 = rev.CANSparkMax(7, rev.MotorType.kBrushless)
@@ -40,17 +52,25 @@ class Robot(magicbot.MagicRobot):
         self.drivetrain_motorl2.follow(self.drivetrain_motorl1)
 
 
-        self.joystick = wpilib.Joystick(0)
+        self.joystick_left = wpilib.Joystick(0)
+        self.joystick_right = wpilib.Joystick(1)
 
 
     def teleopPeriodic(self):
-        self.drivetrain.arcadeDrive(-self.joystick.getRawAxis(1), self.joystick.getRawAxis(0))
-        if self.joystick.getRawButton(1):
+        if self.tank_drive:
+            self.drivetrain.tankDrive(self.joystick_left.getRawAxis(1), self.joystick_right.getRawAxis(2))
+        else:
+            self.drivetrain.arcadeDrive(-self.joystick_left.getRawAxis(1), self.joystick_left.getRawAxis(0), self.joystick_left.getRawAxis(2))
+        if self.joystick_left.getRawButton(1):
             self.intake_sm.engage()
         else:
+            # self.intake_lift_sm.engage()
             self.intake.lift()
-        if self.joystick.getRawButton(11):
+        if self.joystick_left.getRawButton(11):
             self.intake.reset_arm_encoders()
+        if self.joystick_left.getRawButton(3):
+            # self.shoot_sm.engage()
+            self.shooter.shoot()
 
 
 if __name__ == "__main__":
