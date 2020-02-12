@@ -8,12 +8,10 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
         with: 
-          python_version: 3.8
-          architecture: x64
+          python-version: 3.8
       - name: Install build deps
         run: |
           python -m pip install pyfrc
           python -m pip install robotpy-limelight
-      
       - name: Test
         run: python src/robot.py test
