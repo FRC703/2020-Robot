@@ -15,6 +15,7 @@ from components.drivetrain import Drivetrain
 from state_machines.shoot import Shoot
 from state_machines.intake_routine import IntakeRoutine
 from state_machines.intake_lift_routine import IntakeLiftRoutine
+from state_machines.ball_counter import CounterFSM
 
 from wpilib import SmartDashboard
 from networktables import NetworkTables
@@ -25,11 +26,14 @@ class Robot(magicbot.MagicRobot):
     intake_sm: IntakeRoutine
     # intake_lift_sm: IntakeLiftRoutine
     shoot_sm: Shoot
+    ball_counter_sm: CounterFSM
 
     # Components
     intake: Intake
     shooter: Shooter
     drivetrain: Drivetrain
+
+    ball_count: 0
 
 
     # Dashboard config
@@ -55,8 +59,12 @@ class Robot(magicbot.MagicRobot):
         self.joystick_left = wpilib.Joystick(0)
         self.joystick_right = wpilib.Joystick(1)
 
+    def robotPeriodic(self):
+        wpilib.SmartDashboard.putNumber("ballCount", self.ball_count)
+
 
     def teleopPeriodic(self):
+        self.ball_counter_sm.engage()
         if self.tank_drive:
             self.drivetrain.tankDrive(self.joystick_left.getRawAxis(1), self.joystick_right.getRawAxis(2))
         else:

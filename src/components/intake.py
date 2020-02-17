@@ -22,9 +22,9 @@ class Intake:
         self.arm_motor.control_mode = rev.ControlType.kPosition
         self.arm_motor.motor.getEncoder().setPosition(0)
         self.arm_motor.motor.setSmartCurrentLimit(10)
-        self.arm_motor._motor_pid.setP(0.035)
-        self.arm_motor._motor_pid.setI(0.01)
-        self.arm_motor._motor_pid.setD(0.001)
+        self.arm_motor.setP(0.035)
+        self.arm_motor.setI(0.01)
+        self.arm_motor.setD(0.001)
         wpilib.SmartDashboard.putNumber("intakeSpeed", 0)
 
     def lower(self):

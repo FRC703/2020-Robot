@@ -25,6 +25,31 @@ class PIDSparkMax:
         self._motor_pid.setOutputRange(self.kMinOutput, self.kMaxOutput)
         self.motor.setSmartCurrentLimit(10)
 
+    def setP(self, value):
+        self.kP = value
+        self._motor_pid.setP(value)
+
+    def setI(self, value):
+        self.kI = value
+        self._motor_pid.setI(value)
+
+    def setD(self, value):
+        self.kD = value
+        self._motor_pid.setD(value)
+
+    def setIz(self, value):
+        self.kIz = value
+        self._motor_pid.setIZone(value)
+
+    def setFF(self, value):
+        self.kFF = value
+        self._motor_pid.setFF(value)
+
+    def setP(self, min, max):
+        self.kMinOutput = min
+        self.kMaxOutput = max
+        self._motor_pid.setOutputRange(value)
+
     def set(self, setpoint):
         self._motor_pid.setReference(setpoint, self.control_mode)
 
