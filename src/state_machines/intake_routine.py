@@ -10,10 +10,10 @@ class IntakeRoutine(StateMachine):
     def arm_down(self):
         """
         Puts the arm down without running the wheels.
-        After the arm is at 72 degrees, the wheels_on state will run
+        After the arm is at 70 degrees, the wheels_on state will run
         """
         self.intake.lower()
-        if self.intake.arm_motor.motor.getEncoder().getPosition() > 20:
+        if self.intake.arm_position > self.intake.intake_arm_motor_on_position:
             self.next_state("wheels_on")
 
     @state()
