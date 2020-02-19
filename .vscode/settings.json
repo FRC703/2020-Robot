@@ -9,6 +9,6 @@
     "**/opkg_cache": true,
     "**/pip_cache": true
   },
-  "python.pythonPath": "bin/python",
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "python.pythonPath": "C:\\Users\\nzw3tu\\source\\repos\\frc\\robotpy-wpilib-shuffleboard\\Scripts\\python.exe"
 }
