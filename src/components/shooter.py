@@ -23,9 +23,16 @@ class Shooter:
     feeder_motor: TalonSRX
 
     def setup(self):
+        """
+        Runs right after the createObjects method is run.
+        Sets up all the networktables values and configures
+        the shooter motor PID values
+        """
         self.limelight = limelight.Limelight()
-        wpilib.SmartDashboard.putBoolean("limelightLightState", False)
-        wpilib.SmartDashboard.putNumber("shooterMotorSpeed", 0)
+
+        self.log()
+
+        # Shooter motor configuration
         self.motor._motor_pid.setP(0.05)
         self.motor._motor_pid.setD(0.025)
         self.motor.motor.setSmartCurrentLimit(40)
@@ -82,10 +89,18 @@ class Shooter:
         self.log()
 
     def log(self):
+        """
+        Get values relating to the shooter and post them
+        to the dashboard for logging reasons.
+        """
         wpilib.SmartDashboard.putBoolean(
             "limelightLightState", True if self.limelight_state == 3 else False
         )
         wpilib.SmartDashboard.putBoolean("shooterReady", self.is_ready)
         wpilib.SmartDashboard.putBoolean("isAimed", self.is_aimed)
         wpilib.SmartDashboard.putBoolean("targetsFound", self.limelight.valid_targets)
-        wpilib.SmartDashboard.putNumber("shooterMotorSpeed", self.motor.rpm)
+        wpilib.SmartDashboard.putNumber("shooterSpeedTarget", abs(self.motor_rpm))
+        wpilib.SmartDashboard.putNumber("shooterMotorSpeed", abs(self.motor.rpm))
+        wpilib.SmartDashboard.putNumber(
+            "shooterOutput", self.motor.motor.getAppliedOutput()
+        )

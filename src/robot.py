@@ -45,9 +45,10 @@ class Robot(magicbot.MagicRobot):
 
     def createObjects(self):
         self.intake_motor = ctre.TalonSRX(10)
-        self.shooter_motor = PIDSparkMax(16)
         self.intake_arm_motor = PIDSparkMax(8)
-        self.shooter_motor.motor.setOpenLoopRampRate(1)
+
+        self.shooter_motor = PIDSparkMax(16)
+        self.shooter_feeder_motor = ctre.TalonSRX(5)
 
         self.drivetrain_motorr1 = rev.CANSparkMax(5, rev.MotorType.kBrushless)
         self.drivetrain_motorr2 = rev.CANSparkMax(13, rev.MotorType.kBrushless)
@@ -64,23 +65,34 @@ class Robot(magicbot.MagicRobot):
 
     def teleopPeriodic(self):
         self.ball_counter_sm.engage()
+
+        self.handle_drive(self.controls)
+        self.handle_intake(self.controls)
+        self.handle_shooter(self.controls)
+
+    # Subsystem handlers
+    def handle_drive(self, controls: Controls):
         if self.tank_drive:
             self.drivetrain.tankDrive(
-                self.controls.tank_drive_left, self.controls.tank_drive_right
+                controls.tank_drive_left, controls.tank_drive_right
             )
         else:
             self.drivetrain.arcadeDrive(
-                self.controls.arcade_drive_forward,
-                self.controls.arcade_drive_turn,
-                self.controls.arcade_drive_twist,
+                controls.arcade_drive_forward,
+                controls.arcade_drive_turn,
+                controls.arcade_drive_twist,
             )
-        if self.controls.intake:
+
+    def handle_intake(self, controls: Controls):
+        if controls.intake:
             self.intake_sm.engage()
         else:
             self.intake.lift()
-        if self.controls.reset_intake_arm_to_down:
+        if controls.reset_intake_arm_to_down:
             self.intake.reset_arm_encoders()
-        if self.controls.shoot:
+
+    def handle_shooter(self, controls: Controls):
+        if controls.shoot:
             self.shoot_sm.fire()
 
 

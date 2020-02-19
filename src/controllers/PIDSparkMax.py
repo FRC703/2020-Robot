@@ -2,6 +2,10 @@ from rev import CANSparkMax, ControlType, MotorType
 
 
 class PIDSparkMax:
+    """
+    Wrapper for a Rev Spark MAX that exposes all the 
+    PID setup and makes it easy to set a PID setpoint.
+    """
 
     kP = 0.035  # 6e-2
     kI = 0.01  # 1e-3
