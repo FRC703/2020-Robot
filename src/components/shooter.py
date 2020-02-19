@@ -1,37 +1,91 @@
 from limelight import limelight
 from magicbot import will_reset_to, tunable
 from controllers.PIDSparkMax import PIDSparkMax
+
 import wpilib
+from ctre import TalonSRX
+
+from typing import Tuple
 
 
 class Shooter:
-    # limelight: limelight.Limelight
-
     limelight_state = will_reset_to(1)
     motor_rpm = will_reset_to(0)
-    target_rpm = -4350
+    feeder_motor_speed = will_reset_to(0)
+
+    target_rpm = tunable(-4350)
+    feed_speed_setpoint = tunable(0.5)
+    rpm_error = tunable(100)
+    x_aim_error = tunable(1)
+    y_aim_error = tunable(2)
+
     motor: PIDSparkMax
+    feeder_motor: TalonSRX
 
     def setup(self):
         self.limelight = limelight.Limelight()
         wpilib.SmartDashboard.putBoolean("limelightLightState", False)
         wpilib.SmartDashboard.putNumber("shooterMotorSpeed", 0)
-        self.motor._motor_pid.setP(.05)
-        self.motor._motor_pid.setD(.025)
+        self.motor._motor_pid.setP(0.05)
+        self.motor._motor_pid.setD(0.025)
         self.motor.motor.setSmartCurrentLimit(40)
 
-    def aim(self):
-
-        # print("LIMELIGHT DOING THINGS")
+    def aim(self) -> Tuple[float, float]:
+        """
+        Will return the distances from the crosshair
+        """
         self.limelight_state = 3
+        x = self.limelight.horizontal_offset
+        y = self.limelight.vertical_offset
+        return (x, y)
+
+    @property
+    def is_aimed(self):
+        """
+        Test whether the target is within a tolerance
+        """
+        x, y = self.aim
+        if abs(x) > self.x_aim_error:
+            return False
+        # if abs(y) > self.y_aim_error:
+        #     return False
+        return True
+
+    @property
+    def is_ready(self):
+        """
+        Returns whether the current rpm of the motor is within
+        a certain range, specified by the `rpm_error` property
+        """
+        return (
+            self.rpm_error + self.motor_rpm
+            > self.motor.rpm
+            > -self.rpm_error + self.motor_rpm
+        )
 
     def shoot(self):
-        self.motor_rpm = -4350 # self.target_rpm
+        """
+        Sets the shooter to start moving toward the setpoint
+        """
+        self.motor_rpm = self.target_rpm
+
+    def feed(self):
+        """
+        Start the feeder to move the power cells towards the flywheel
+        """
+        self.feeder_motor_speed = self.feed_speed_setpoint
 
     def execute(self):
-        # print(f'Execute limelight {self.limelight_state}')
-        wpilib.SmartDashboard.putBoolean("limelightLightState", True if self.limelight_state == 3 else False)
         self.limelight.light(self.limelight_state)
-        wpilib.SmartDashboard.putNumber("shooterMotorSpeed", self.motor.rpm)
         self.motor.set(self.motor_rpm)
-        print(self.motor_rpm)
+        self.feeder_motor.set(self.feeder_motor_speed)
+        self.log()
+
+    def log(self):
+        wpilib.SmartDashboard.putBoolean(
+            "limelightLightState", True if self.limelight_state == 3 else False
+        )
+        wpilib.SmartDashboard.putBoolean("shooterReady", self.is_ready)
+        wpilib.SmartDashboard.putBoolean("isAimed", self.is_aimed)
+        wpilib.SmartDashboard.putBoolean("targetsFound", self.limelight.valid_targets)
+        wpilib.SmartDashboard.putNumber("shooterMotorSpeed", self.motor.rpm)

@@ -3,6 +3,7 @@ from magicbot import tunable
 
 from components.intake import Intake
 
+
 class CounterFSM(StateMachine):
     """
     This state machine will continuously watch the current of the
@@ -11,6 +12,7 @@ class CounterFSM(StateMachine):
     are grabbed, it will likely only count it as one.
     If the intake is not running, the current will not be watched.
     """
+
     intake: Intake
     ball_count: int
 
@@ -38,7 +40,7 @@ class CounterFSM(StateMachine):
         the main state.
         """
         if abs(self.intake.intake_speed) < 0.2:
-             self.next_state("watch_intake_state")
+            self.next_state("watch_intake_state")
         if self.intake.motor.getOutputCurrent() < self.balanced_zone:
             self.next_state("intake_running")
 
@@ -54,7 +56,7 @@ class CounterFSM(StateMachine):
         the main state.
         """
         if abs(self.intake.intake_speed) < 0.2:
-             self.next_state("watch_intake_state")
+            self.next_state("watch_intake_state")
         if self.intake.motor.getOutputCurrent() > self.spike_zone:
             ball_count += 1
             self.next_state("intake_running_ingore_current")
