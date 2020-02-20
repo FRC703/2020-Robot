@@ -49,7 +49,7 @@ class PIDSparkMax:
         self.kFF = value
         self._motor_pid.setFF(value)
 
-    def setP(self, min, max):
+    def setMOutputRange(self, min, max):
         self.kMinOutput = min
         self.kMaxOutput = max
         self._motor_pid.setOutputRange(value)

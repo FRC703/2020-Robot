@@ -34,11 +34,11 @@ class Robot(magicbot.MagicRobot):
     shooter: Shooter
     drivetrain: Drivetrain
 
-    ball_count: 0
+    ball_count = 0
 
     # Dashboard config
-    tank_drive = magicbot.tunable(False)
-    twist = magicbot.tunable(True)
+    tank_drive = False
+    twist = True
 
     def shuffleboardInit(self):
         pass

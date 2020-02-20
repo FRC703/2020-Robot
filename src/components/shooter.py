@@ -3,7 +3,8 @@ from magicbot import will_reset_to, tunable
 from controllers.PIDSparkMax import PIDSparkMax
 
 import wpilib
-from ctre import TalonSRX
+from ctre import TalonSRX, ControlMode
+
 
 from typing import Tuple
 
@@ -51,7 +52,7 @@ class Shooter:
         """
         Test whether the target is within a tolerance
         """
-        x, y = self.aim
+        x, y = self.aim()
         if abs(x) > self.x_aim_error:
             return False
         # if abs(y) > self.y_aim_error:
@@ -85,7 +86,7 @@ class Shooter:
     def execute(self):
         self.limelight.light(self.limelight_state)
         self.motor.set(self.motor_rpm)
-        self.feeder_motor.set(self.feeder_motor_speed)
+        self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)
         self.log()
 
     def log(self):

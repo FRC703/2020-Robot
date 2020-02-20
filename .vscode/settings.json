@@ -10,5 +10,5 @@
     "**/pip_cache": true
   },
   "python.formatting.provider": "black",
-  "python.pythonPath": "C:\\Users\\nzw3tu\\source\\repos\\frc\\Phoenix2020\\Scripts\\python.exe"
+  "python.pythonPath": ".\\Scripts\\python.exe"
 }
