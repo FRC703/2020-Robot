@@ -11,4 +11,3 @@ class JoystickButton:
 
     def get(self):
         return self.joystick.getRawButton(self.button_id)
-

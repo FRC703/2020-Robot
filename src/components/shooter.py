@@ -18,7 +18,7 @@ class Shooter:
     feed_speed_setpoint = tunable(-0.85)
     rpm_error = tunable(100)
     x_aim_error = tunable(1)
-    y_aim_error = tunable(2)
+    y_aim_error = tunable(1)
 
     motor: PIDSparkMax
     feeder_motor: TalonSRX
@@ -34,8 +34,8 @@ class Shooter:
         self.log()
 
         # Shooter motor configuration
-        self.motor.fromKu(0.05, 1)  # P = 0.03, I = 0.06, D = 0.00375
-        self.motor.setFF(1 / 5880)
+        self.motor.fromKu(0.05, 1.2)  # P = 0.03, I = 0.05, D = 0.125
+        self.motor.setFF(12 / 5880)
         # self.motor._motor_pid.setP(0.0015)
         # self.motor._motor_pid.setD(.008)
         # self.motor._motor_pid.setI(0.005)

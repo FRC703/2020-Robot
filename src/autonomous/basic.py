@@ -24,4 +24,3 @@ class Basic(AutonomousStateMachine):
     def reverse(self):
         self.intake_sm.engage()
         self.drivetrain.arcadeDrive(-0.5, 0, 0)
-

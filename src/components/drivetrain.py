@@ -42,7 +42,6 @@ class Drivetrain:
         self.motorr2.follow(self.motorr1)
         self.motorl2.follow(self.motorl1)
         self.drive = wpilib.drive.DifferentialDrive(self.motorl1, self.motorr1)
-        
 
     def arcadeDrive(self, forward, turn, twist):
         self.forward = forward * 1 if self.intake_is_front else -1

@@ -63,11 +63,10 @@ class PIDSparkMax:
     def fromKu(self, Ku: float, Tu: float) -> None:
         """
         Use the Zeigler-Nichols method to tune the PID based off the oscillations.
+        Uses a P value for oscillation along with the period of the oscullations to find the PID values.
 
         Args:
-            Ku: This is the value of P that you obtain by increasing P slowly until the
-            system starts to oscillate
-
+            Ku: This is the value of P that you obtain by increasing P slowly until the system starts to oscillate
             Tu: This is the period of the oscillation, with one full stroke
         """
         self.setP(0.6 * Ku)

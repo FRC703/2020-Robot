@@ -18,7 +18,7 @@ class ShootRoutine(StateMachine):
         """
         self.shooter.aim()
         if self.shooter.limelight.valid_targets:
-            next_state("track")
+            self.next_state("track")
 
     @state
     def track(self):
@@ -33,4 +33,3 @@ class ShootRoutine(StateMachine):
     @state
     def shoot(self):
         self.shooter.shoot()
-        self.shooter.feed()
