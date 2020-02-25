@@ -63,9 +63,9 @@ class Drivetrain:
         else:
             if self.twist:
                 self.drive.arcadeDrive(self.forward, self.twist_power, True)
-                wpilib.SmartDashboard.putNumber("forwardSpeed", self.twist_power)
+                wpilib.SmartDashboard.putNumber("turnSpeed", self.twist_power)
             else:
                 self.drive.arcadeDrive(self.forward, self.turn, True)
-                wpilib.SmartDashboard.putNumber("forwardSpeed", self.turn)
+                wpilib.SmartDashboard.putNumber("turnSpeed", self.turn)
 
             wpilib.SmartDashboard.putNumber("forwardSpeed", self.forward)

@@ -82,4 +82,3 @@ class Intake:
             "armPosition", self.arm_motor.motor.getEncoder().getPosition()
         )
         wpilib.SmartDashboard.putNumber("armPower", self.arm_motor.rpm)
-        self.intake_speed = 0

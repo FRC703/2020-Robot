@@ -22,7 +22,11 @@ class Controls:
 
     @property
     def reset_intake_arm_to_down(self):
-        return self.joystick.getRawButtonPressed(11)
+        return (
+            self.joystick.getRawButtonPressed(7)
+            and self.joystick.getRawButtonPressed(9)
+            and self.joystick.getRawButtonPressed(11)
+        )
 
     @property
     def tank_drive_left(self):

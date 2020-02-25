@@ -15,7 +15,7 @@ class Shooter:
     feeder_motor_speed = will_reset_to(0)
 
     target_rpm = tunable(-4200)
-    feed_speed_setpoint = tunable(-0.85)
+    feed_speed_setpoint = tunable(-1)
     rpm_error = tunable(100)
     x_aim_error = tunable(1)
     y_aim_error = tunable(1)
@@ -36,9 +36,8 @@ class Shooter:
         # Shooter motor configuration
         self.motor.fromKu(0.05, 1.2)  # P = 0.03, I = 0.05, D = 0.125
         self.motor.setFF(12 / 5880)
-        # self.motor._motor_pid.setP(0.0015)
-        # self.motor._motor_pid.setD(.008)
-        # self.motor._motor_pid.setI(0.005)
+
+        # self.motor.setPID(0.0015, 0.008, 0.005)
         self.motor._motor_pid.setIZone(0.5)
         self.motor.motor.setSmartCurrentLimit(100)
 
@@ -59,8 +58,6 @@ class Shooter:
         x, y = self.aim()
         if abs(x) > self.x_aim_error:
             return False
-        # if abs(y) > self.y_aim_error:
-        #     return False
         return True
 
     @property
@@ -94,7 +91,7 @@ class Shooter:
         else:
             self.motor.set(self.motor_rpm)
         if abs(self.motor.rpm) > 3500 or self.feeder_motor_speed:
-            self.feeder_motor.set(ControlMode.PercentOutput, -1)
+            self.feeder_motor.set(ControlMode.PercentOutput, self.feed_speed_setpoint)
         else:
             self.feeder_motor.set(ControlMode.PercentOutput, 0)
         # self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)

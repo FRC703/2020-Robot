@@ -60,6 +60,11 @@ class PIDSparkMax:
     def set(self, setpoint):
         self._motor_pid.setReference(setpoint, self.control_mode)
 
+    def setPID(self, kP, kI, kD):
+        self.setP(kP)
+        self.setI(kI)
+        self.setD(kD)
+
     def fromKu(self, Ku: float, Tu: float) -> None:
         """
         Use the Zeigler-Nichols method to tune the PID based off the oscillations.
