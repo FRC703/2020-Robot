@@ -8,16 +8,17 @@ class Controls:
 
     @property
     def shoot(self):
-        return self.joystick.getRawButton(3)
+        return self.joystick.getRawButton(1)
 
     @property
     def feed(self):
         return self.joystick.getRawButton(5)
 
-
     @property
     def intake(self):
-        return self.joystick.getRawButton(1)
+        # return self.joystick.getRawButton(1)
+        # Test intake arm with the flipper on the bottom of the joystick
+        return self.joystick.getRawAxis(4) < 0.5
 
     @property
     def reset_intake_arm_to_down(self):
@@ -37,7 +38,7 @@ class Controls:
 
     @property
     def arcade_drive_twist(self):
-        return pow(self.joystick.getRawAxis(2), 3) * .5
+        return pow(self.joystick.getRawAxis(2), 3) * 0.5
 
     @property
     def arcade_drive_forward(self):
