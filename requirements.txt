@@ -1,4 +1,4 @@
-pyfrc>=2020.0.0
-robotpy-ctre>=2020.0.0
-robotpy-rev>=2020.0.0
-robotpy-limelight>=2020.0.0
+pyfrc>=2020.0.8
+robotpy-ctre>=2020.3.0
+robotpy-rev>=2020.1.0.4
+robotpy-limelight>=2020.1.2

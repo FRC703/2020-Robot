@@ -19,6 +19,7 @@ There is a 775 pro mounted to the intake arm which consists of six 4" 35A Compli
 
 The shooter has a 1:3 geared flywheel attached to a Rev NEO to launch power cells.
 The NEO uses a [PID loop](#Shooter-1) to maintain a constant speed to ensure accuracy between shots and varying battery levels. The flywheel for it uses two 4" 45A compliant wheels, spinning at approximately 14000 rpm.
+(This will definitely be changed, the wheels will absolutely explode)
 
 ## Control System
 
