@@ -10,5 +10,5 @@
     "**/pip_cache": true
   },
   "python.formatting.provider": "black",
-  "python.pythonPath": ".\\Scripts\\python.exe"
+  "python.pythonPath": "Scripts\\python.exe"
 }

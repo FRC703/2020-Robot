@@ -15,7 +15,7 @@ class Shooter:
     feeder_motor_speed = will_reset_to(0)
 
     target_rpm = tunable(-4200)
-    feed_speed_setpoint = tunable(-.85)
+    feed_speed_setpoint = tunable(-0.85)
     rpm_error = tunable(100)
     x_aim_error = tunable(1)
     y_aim_error = tunable(2)
@@ -34,10 +34,12 @@ class Shooter:
         self.log()
 
         # Shooter motor configuration
-        self.motor._motor_pid.setP(0.0015)
-        self.motor._motor_pid.setD(.008)
-        self.motor._motor_pid.setI(0.005)
-        self.motor._motor_pid.setIZone(.5)
+        self.motor.fromKu(0.05, 1)  # P = 0.03, I = 0.06, D = 0.00375
+        self.motor.setFF(1 / 5880)
+        # self.motor._motor_pid.setP(0.0015)
+        # self.motor._motor_pid.setD(.008)
+        # self.motor._motor_pid.setI(0.005)
+        self.motor._motor_pid.setIZone(0.5)
         self.motor.motor.setSmartCurrentLimit(100)
 
     def aim(self) -> Tuple[float, float]:
