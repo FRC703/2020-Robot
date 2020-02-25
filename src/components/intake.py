@@ -1,9 +1,9 @@
 import ctre
-from controllers.PIDSparkMax import PIDSparkMax
+import rev
 import wpilib
 
-import rev
-from magicbot import will_reset_to, tunable
+from controllers.PIDSparkMax import PIDSparkMax
+from magicbot import will_reset_to
 
 
 class Intake:
@@ -14,7 +14,7 @@ class Intake:
     intake_speed_in = -0.45
     intake_speed_out = 0.1
     intake_up = True
-    _intake_arm_down_position = 90  # Temporary to figure out the direction
+    _intake_arm_down_position = 90
     _intake_arm_motor_on_position = 70
     _gear_ratio = 1.4
 
@@ -35,10 +35,6 @@ class Intake:
         """
         # return self._arm_angle_convert(self._intake_arm_motor_on_position)
         return 30
-
-    @property
-    def arm_position(self):
-        return self.arm_motor.motor.getEncoder().getPosition()
 
     def _arm_angle_convert(self, angle: float) -> float:
         return angle / 3.6 * self._gear_ratio

@@ -42,4 +42,4 @@ class Controls:
 
     @property
     def arcade_drive_forward(self):
-        return -self.joystick.getRawAxis(1)
+        return -pow(self.joystick.getRawAxis(1), 3)

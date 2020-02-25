@@ -13,7 +13,7 @@ class IntakeRoutine(StateMachine):
         After the arm is at 70 degrees, the wheels_on state will run
         """
         self.intake.lower()
-        if self.intake.arm_position < self.intake.intake_arm_motor_on_position:
+        if self.intake.arm_position > self.intake.intake_arm_motor_on_position:
             self.next_state("wheels_on")
 
     @state()

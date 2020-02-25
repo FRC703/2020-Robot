@@ -63,6 +63,9 @@ class Robot(magicbot.MagicRobot):
     def robotPeriodic(self):
         wpilib.SmartDashboard.putNumber("ballCount", self.ball_count)
 
+    def teleopInit(self):
+        self.intake.lift()
+
     def teleopPeriodic(self):
         # self.ball_counter_sm.engage()
 
@@ -72,6 +75,9 @@ class Robot(magicbot.MagicRobot):
 
     # Subsystem handlers
     def handle_drive(self, controls: Controls):
+        """
+        Runs the control systems 
+        """
         if self.tank_drive:
             self.drivetrain.tankDrive(
                 controls.tank_drive_left, controls.tank_drive_right

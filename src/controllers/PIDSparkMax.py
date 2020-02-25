@@ -54,19 +54,11 @@ class PIDSparkMax:
         self.kMaxOutput = max
         self._motor_pid.setOutputRange(value)
 
-<<<<<<< HEAD
-    def set(self, setpoint, control_mode=None):
-        self._motor_pid.setReference(setpoint, control_mode if control_mode else self.control_mode)
-
-    def stop(self):
-        self.motor.stopMotor()
-=======
     def getEncoder(self):
         return self.motor.getEncoder()
 
     def set(self, setpoint):
         self._motor_pid.setReference(setpoint, self.control_mode)
->>>>>>> 8896b4d416f108f332885d5975f5b06d0c414aeb
 
     @property
     def rpm(self):
