@@ -11,7 +11,7 @@ class Intake:
     motor: ctre.TalonSRX
     arm_motor: PIDSparkMax
     intake_speed = 0
-    intake_speed_in = -0.6
+    intake_speed_in = -0.45
     intake_speed_out = 0.1
     intake_up = True
     _intake_arm_down_position = 90  # Temporary to figure out the direction
@@ -30,9 +30,11 @@ class Intake:
     @property
     def intake_arm_motor_on_position(self) -> float:
         """
+
         Returns the angle that the motor for the intake will be turned on when lowering
         """
-        return self._arm_angle_convert(self._intake_arm_motor_on_position)
+        # return self._arm_angle_convert(self._intake_arm_motor_on_position)
+        return 30
 
     @property
     def arm_position(self):
@@ -70,7 +72,7 @@ class Intake:
 
     @property
     def arm_position(self):
-        self.arm_motor.motor.getEncoder().getPosition() / 36
+        return self.arm_motor.motor.getEncoder().getPosition() / 36
 
     def execute(self):
         if self.intake_up:

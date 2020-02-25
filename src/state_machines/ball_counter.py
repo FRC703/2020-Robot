@@ -58,5 +58,5 @@ class CounterFSM(StateMachine):
         if abs(self.intake.intake_speed) < 0.2:
             self.next_state("watch_intake_state")
         if self.intake.motor.getOutputCurrent() > self.spike_zone:
-            ball_count += 1
+            self.ball_count += 1
             self.next_state("intake_running_ingore_current")

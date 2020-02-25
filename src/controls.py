@@ -11,12 +11,17 @@ class Controls:
         return self.joystick.getRawButton(3)
 
     @property
+    def feed(self):
+        return self.joystick.getRawButton(5)
+
+
+    @property
     def intake(self):
         return self.joystick.getRawButton(1)
 
     @property
     def reset_intake_arm_to_down(self):
-        return self.joystick.getRawButton(11)
+        return self.joystick.getRawButtonPressed(11)
 
     @property
     def tank_drive_left(self):
@@ -32,7 +37,7 @@ class Controls:
 
     @property
     def arcade_drive_twist(self):
-        return self.joystick.getRawAxis(2)
+        return pow(self.joystick.getRawAxis(2), 3) * .5
 
     @property
     def arcade_drive_forward(self):

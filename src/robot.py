@@ -45,15 +45,15 @@ class Robot(magicbot.MagicRobot):
 
     def createObjects(self):
         self.intake_motor = ctre.TalonSRX(10)
-        self.intake_arm_motor = PIDSparkMax(8)
+        self.intake_arm_motor = PIDSparkMax(7)
 
         self.shooter_motor = PIDSparkMax(16)
-        self.shooter_feeder_motor = ctre.TalonSRX(5)
+        self.shooter_feeder_motor = ctre.TalonSRX(19)
 
         self.drivetrain_motorr1 = rev.CANSparkMax(5, rev.MotorType.kBrushless)
-        self.drivetrain_motorr2 = rev.CANSparkMax(13, rev.MotorType.kBrushless)
-        self.drivetrain_motorl1 = rev.CANSparkMax(7, rev.MotorType.kBrushless)
-        self.drivetrain_motorl2 = rev.CANSparkMax(17, rev.MotorType.kBrushless)
+        self.drivetrain_motorr2 = rev.CANSparkMax(8, rev.MotorType.kBrushless)
+        self.drivetrain_motorl1 = rev.CANSparkMax(17, rev.MotorType.kBrushless)
+        self.drivetrain_motorl2 = rev.CANSparkMax(13, rev.MotorType.kBrushless)
 
         self.joystick_left = wpilib.Joystick(0)
         self.joystick_right = wpilib.Joystick(1)
@@ -64,7 +64,7 @@ class Robot(magicbot.MagicRobot):
         wpilib.SmartDashboard.putNumber("ballCount", self.ball_count)
 
     def teleopPeriodic(self):
-        self.ball_counter_sm.engage()
+        # self.ball_counter_sm.engage()
 
         self.handle_drive(self.controls)
         self.handle_intake(self.controls)
@@ -93,7 +93,10 @@ class Robot(magicbot.MagicRobot):
 
     def handle_shooter(self, controls: Controls):
         if controls.shoot:
-            self.shoot_sm.fire()
+            # self.shoot_sm.fire()
+            self.shooter.shoot()
+        if controls.feed:
+            self.shooter.feed()
 
 
 if __name__ == "__main__":

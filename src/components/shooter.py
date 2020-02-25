@@ -14,8 +14,8 @@ class Shooter:
     motor_rpm = will_reset_to(0)
     feeder_motor_speed = will_reset_to(0)
 
-    target_rpm = tunable(-4350)
-    feed_speed_setpoint = tunable(0.5)
+    target_rpm = tunable(-4200)
+    feed_speed_setpoint = tunable(-.85)
     rpm_error = tunable(100)
     x_aim_error = tunable(1)
     y_aim_error = tunable(2)
@@ -34,9 +34,11 @@ class Shooter:
         self.log()
 
         # Shooter motor configuration
-        self.motor._motor_pid.setP(0.05)
-        self.motor._motor_pid.setD(0.025)
-        self.motor.motor.setSmartCurrentLimit(40)
+        self.motor._motor_pid.setP(0.0015)
+        self.motor._motor_pid.setD(.008)
+        self.motor._motor_pid.setI(0.005)
+        self.motor._motor_pid.setIZone(.5)
+        self.motor.motor.setSmartCurrentLimit(100)
 
     def aim(self) -> Tuple[float, float]:
         """
@@ -85,8 +87,15 @@ class Shooter:
 
     def execute(self):
         self.limelight.light(self.limelight_state)
-        self.motor.set(self.motor_rpm)
-        self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)
+        if abs(self.motor_rpm) < 200:
+            self.motor.stop()
+        else:
+            self.motor.set(self.motor_rpm)
+        if abs(self.motor.rpm) > 3500 or self.feeder_motor_speed:
+            self.feeder_motor.set(ControlMode.PercentOutput, -1)
+        else:
+            self.feeder_motor.set(ControlMode.PercentOutput, 0)
+        # self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)
         self.log()
 
     def log(self):

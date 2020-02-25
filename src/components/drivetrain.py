@@ -2,7 +2,7 @@ import wpilib
 import wpilib.drive
 import rev
 
-from magicbot import tunable
+from magicbot import tunable, will_reset_to
 
 
 class Drivetrain:
@@ -19,6 +19,10 @@ class Drivetrain:
     vision_turn_kI = tunable(0)
     vision_turn_kD = tunable(0)
 
+    forward = will_reset_to(0)
+    turn = will_reset_to(0)
+    twist_power = will_reset_to(0)
+
     tank_drive: bool
     twist: bool
 
@@ -31,9 +35,14 @@ class Drivetrain:
         self.forward = self.vision_dist_kP * y
 
     def setup(self):
+        self.motorr1.restoreFactoryDefaults()
+        self.motorr2.restoreFactoryDefaults()
+        self.motorl1.restoreFactoryDefaults()
+        self.motorl2.restoreFactoryDefaults()
         self.motorr2.follow(self.motorr1)
         self.motorl2.follow(self.motorl1)
         self.drive = wpilib.drive.DifferentialDrive(self.motorl1, self.motorr1)
+        
 
     def arcadeDrive(self, forward, turn, twist):
         self.forward = forward * 1 if self.intake_is_front else -1
@@ -55,5 +64,9 @@ class Drivetrain:
         else:
             if self.twist:
                 self.drive.arcadeDrive(self.forward, self.twist_power, True)
+                wpilib.SmartDashboard.putNumber("forwardSpeed", self.twist_power)
             else:
                 self.drive.arcadeDrive(self.forward, self.turn, True)
+                wpilib.SmartDashboard.putNumber("forwardSpeed", self.turn)
+
+            wpilib.SmartDashboard.putNumber("forwardSpeed", self.forward)
