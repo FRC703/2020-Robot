@@ -15,7 +15,7 @@ class Drivetrain:
     vision_dist_kI = tunable(0)
     vision_dist_kD = tunable(0)
 
-    vision_turn_kP = tunable(0.3)
+    vision_turn_kP = tunable(0.06)
     vision_turn_kI = tunable(0)
     vision_turn_kD = tunable(0)
 
@@ -32,7 +32,9 @@ class Drivetrain:
 
     def vision_aim(self, x: float, y: float, aim_x=True, aim_y=True):
         self.turn = self.vision_turn_kP * x
-        self.forward = self.vision_dist_kP * y
+        # self.turn = min(-.5, min(self.turn, .5))
+        self.twist_power = self.turn
+        # self.forward = self.vision_dist_kP * y
 
     def setup(self):
         self.motorr1.restoreFactoryDefaults()

@@ -1,5 +1,5 @@
 from limelight import limelight
-from magicbot import will_reset_to, tunable
+from magicbot import will_reset_to, tunable, feedback
 from controllers.PIDSparkMax import PIDSparkMax
 
 import wpilib
@@ -10,13 +10,13 @@ from typing import Tuple
 
 
 class Shooter:
-    limelight_state = will_reset_to(1)
+    limelight_state = will_reset_to(3)
     motor_rpm = will_reset_to(0)
     feeder_motor_speed = will_reset_to(0)
 
-    target_rpm = tunable(-4200)
+    target_rpm = tunable(-3500)
     feed_speed_setpoint = tunable(-1)
-    rpm_error = tunable(100)
+    rpm_error = tunable(300)
     x_aim_error = tunable(1)
     y_aim_error = tunable(1)
 
@@ -34,13 +34,15 @@ class Shooter:
         self.log()
 
         # Shooter motor configuration
-        self.motor.fromKu(0.05, 1.2)  # P = 0.03, I = 0.05, D = 0.125
-        self.motor.setFF(12 / 5880)
-
+        self.motor.fromKu(0.0008, .6)  # P = 0.03, I = 0.05, D = 0.125
+        self.motor.setFF(1 / 5880)
+        # self.motor.setFF(0)
+        # self.motor.setPID(.0008, 0, 0)
         # self.motor.setPID(0.0015, 0.008, 0.005)
         self.motor._motor_pid.setIZone(0.5)
         self.motor.motor.setSmartCurrentLimit(100)
 
+    @feedback
     def aim(self) -> Tuple[float, float]:
         """
         Will return the distances from the crosshair
@@ -90,7 +92,7 @@ class Shooter:
             self.motor.stop()
         else:
             self.motor.set(self.motor_rpm)
-        if abs(self.motor.rpm) > 3500 or self.feeder_motor_speed:
+        if abs(self.motor.rpm) > 3200 or self.feeder_motor_speed:
             self.feeder_motor.set(ControlMode.PercentOutput, self.feed_speed_setpoint)
         else:
             self.feeder_motor.set(ControlMode.PercentOutput, 0)

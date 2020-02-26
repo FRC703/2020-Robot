@@ -57,6 +57,9 @@ class PIDSparkMax:
     def getEncoder(self):
         return self.motor.getEncoder()
 
+    def stop(self):
+        self.motor.stopMotor()
+
     def set(self, setpoint):
         self._motor_pid.setReference(setpoint, self.control_mode)
 

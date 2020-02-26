@@ -43,6 +43,10 @@ class Robot(magicbot.MagicRobot):
     def shuffleboardInit(self):
         pass
 
+    def disabledPeriodic(self):
+        self.shooter.limelight_state = 1
+        self.shooter.limelight.light(1)
+
     def createObjects(self):
         self.intake_motor = ctre.TalonSRX(10)
         self.intake_arm_motor = PIDSparkMax(7)
@@ -103,6 +107,8 @@ class Robot(magicbot.MagicRobot):
             self.shooter.shoot()
         if controls.feed:
             self.shooter.feed()
+        if controls.aim:
+            self.drivetrain.vision_aim(*self.shooter.aim())
 
 
 if __name__ == "__main__":
