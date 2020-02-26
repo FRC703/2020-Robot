@@ -1,5 +1,6 @@
 import wpilib
 import wpilib.drive
+import wpilib.controller
 import rev
 
 from magicbot import tunable, will_reset_to
@@ -31,8 +32,8 @@ class Drivetrain:
     turn_multiplier = tunable(0.7)
 
     def vision_aim(self, x: float, y: float, aim_x=True, aim_y=True):
-        self.turn = self.vision_turn_kP * x
-        # self.turn = min(-.5, min(self.turn, .5))
+        out = self.vision_pid.calculate(x)
+        self.turn = out
         self.twist_power = self.turn
         # self.forward = self.vision_dist_kP * y
 
@@ -44,6 +45,10 @@ class Drivetrain:
         self.motorr2.follow(self.motorr1)
         self.motorl2.follow(self.motorl1)
         self.drive = wpilib.drive.DifferentialDrive(self.motorl1, self.motorr1)
+        self.vision_pid = wpilib.controller.PIDController(0.06, 0.1, 0.009)
+        self.vision_pid.setSetpoint(0)
+        self.vision_pid.calculate(0)
+        self.vision_pid.setTolerance(.1)
 
     def arcadeDrive(self, forward, turn, twist):
         self.forward = forward * 1 if self.intake_is_front else -1
