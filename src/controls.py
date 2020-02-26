@@ -8,7 +8,21 @@ class Controls:
 
     @property
     def shoot(self):
+        """
+        State machine based shoot
+        """
+        return self.joystick.getRawButton(1)
+
+    @property
+    def manual_shoot(self):
+        """
+        Just shoot and feed, no state machine
+        """
         return self.joystick.getRawButton(2)
+
+    @property
+    def toggle_camera(self):
+        return self.joystick.getRawButtonPressed(12)
 
     @property
     def feed(self):

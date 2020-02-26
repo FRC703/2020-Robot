@@ -48,7 +48,7 @@ class Drivetrain:
         self.vision_pid = wpilib.controller.PIDController(0.06, 0.1, 0.009)
         self.vision_pid.setSetpoint(0)
         self.vision_pid.calculate(0)
-        self.vision_pid.setTolerance(.1)
+        self.vision_pid.setTolerance(0.1)
 
     def arcadeDrive(self, forward, turn, twist):
         self.forward = forward * 1 if self.intake_is_front else -1

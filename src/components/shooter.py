@@ -10,7 +10,7 @@ from typing import Tuple
 
 
 class Shooter:
-    limelight_state = will_reset_to(3)
+    limelight_state = will_reset_to(1)
     motor_rpm = will_reset_to(0)
     feeder_motor_speed = will_reset_to(0)
 
@@ -23,6 +23,8 @@ class Shooter:
     motor: PIDSparkMax
     feeder_motor: TalonSRX
 
+    camera_state: int
+
     def setup(self):
         """
         Runs right after the createObjects method is run.
@@ -34,7 +36,7 @@ class Shooter:
         self.log()
 
         # Shooter motor configuration
-        self.motor.fromKu(0.0008, .6)  # P = 0.03, I = 0.05, D = 0.125
+        self.motor.fromKu(0.0008, 0.6)  # P = 0.03, I = 0.05, D = 0.125
         self.motor.setFF(1 / 5880)
         # self.motor.setFF(0)
         # self.motor.setPID(.0008, 0, 0)
@@ -48,6 +50,7 @@ class Shooter:
         Will return the distances from the crosshair
         """
         self.limelight_state = 3
+        self.camera_state = 1
         x = self.limelight.horizontal_offset
         y = self.limelight.vertical_offset
         return (x, y)
@@ -87,12 +90,15 @@ class Shooter:
         self.feeder_motor_speed = self.feed_speed_setpoint
 
     def execute(self):
-        self.limelight.light(self.limelight_state)
+        # self.limelight.light(self.limelight_state)
         if abs(self.motor_rpm) < 200:
             self.motor.stop()
         else:
             self.motor.set(self.motor_rpm)
-        if abs(self.motor.rpm) > 3200 or self.feeder_motor_speed:
+        if (
+            abs(self.motor_rpm) > 500
+            and abs(self.motor.rpm) > abs(self.motor_rpm) - self.rpm_error
+        ) or self.feeder_motor_speed:
             self.feeder_motor.set(ControlMode.PercentOutput, self.feed_speed_setpoint)
         else:
             self.feeder_motor.set(ControlMode.PercentOutput, 0)

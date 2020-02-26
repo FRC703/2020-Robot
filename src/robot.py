@@ -40,6 +40,8 @@ class Robot(magicbot.MagicRobot):
     tank_drive = False
     twist = True
 
+    camera_state = 1
+
     def shuffleboardInit(self):
         pass
 
@@ -109,6 +111,11 @@ class Robot(magicbot.MagicRobot):
             self.shooter.feed()
         if controls.aim:
             self.drivetrain.vision_aim(*self.shooter.aim())
+
+    def handle_vision(self, controls: Controls):
+        if controls.toggle_camera:
+            self.camera_state = 1 if self.camera_state else 0
+            self.shooter.limelight.pipeline(self.camera_state)
 
 
 if __name__ == "__main__":
