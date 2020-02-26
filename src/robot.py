@@ -3,7 +3,7 @@ import math
 import wpilib
 import wpilib.drive
 from wpilib import SmartDashboard
-import rev
+from rev import CANSparkMax, MotorType
 import ctre
 
 import magicbot
@@ -54,10 +54,10 @@ class Robot(magicbot.MagicRobot):
         self.shooter_motor = PIDSparkMax(16)
         self.shooter_feeder_motor = ctre.TalonSRX(19)
 
-        self.drivetrain_motorr1 = rev.CANSparkMax(5, rev.MotorType.kBrushless)
-        self.drivetrain_motorr2 = rev.CANSparkMax(8, rev.MotorType.kBrushless)
-        self.drivetrain_motorl1 = rev.CANSparkMax(17, rev.MotorType.kBrushless)
-        self.drivetrain_motorl2 = rev.CANSparkMax(13, rev.MotorType.kBrushless)
+        self.drivetrain_motorr1 = CANSparkMax(5, MotorType.kBrushless)
+        self.drivetrain_motorr2 = CANSparkMax(8, MotorType.kBrushless)
+        self.drivetrain_motorl1 = CANSparkMax(17, MotorType.kBrushless)
+        self.drivetrain_motorl2 = CANSparkMax(13, MotorType.kBrushless)
 
         self.joystick_left = wpilib.Joystick(0)
         self.joystick_right = wpilib.Joystick(1)
