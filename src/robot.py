@@ -1,76 +1,114 @@
+import math
+
 import wpilib
 import wpilib.drive
-import magicbot
-import math
-from limelight import limelight
-
-import ctre
+from wpilib import SmartDashboard
 import rev
+import ctre
+
+import magicbot
+from limelight import limelight
 from controllers.PIDSparkMax import PIDSparkMax
 
 from components.intake import Intake
 from components.shooter import Shooter
 from components.drivetrain import Drivetrain
 
-from state_machines.shoot import Shoot
+from state_machines.shoot_routine import ShootRoutine
 from state_machines.intake_routine import IntakeRoutine
-from state_machines.intake_lift_routine import IntakeLiftRoutine
+from state_machines.ball_counter import CounterFSM
 
-from wpilib import SmartDashboard
 from networktables import NetworkTables
+
+from controls import Controls
 
 
 class Robot(magicbot.MagicRobot):
     # State Machines
     intake_sm: IntakeRoutine
-    # intake_lift_sm: IntakeLiftRoutine
-    shoot_sm: Shoot
+    shoot_sm: ShootRoutine
+    ball_counter_sm: CounterFSM
 
     # Components
     intake: Intake
     shooter: Shooter
     drivetrain: Drivetrain
 
+    ball_count = 0
 
     # Dashboard config
-    tank_drive = magicbot.tunable(False)
-    twist = magicbot.tunable(True)
+    tank_drive = False
+    twist = True
 
     def shuffleboardInit(self):
         pass
 
+    def disabledPeriodic(self):
+        self.shooter.limelight_state = 1
+        self.shooter.limelight.light(1)
+
     def createObjects(self):
         self.intake_motor = ctre.TalonSRX(10)
-        self.shooter_motor = PIDSparkMax(16)
-        self.intake_arm_motor = PIDSparkMax(8)
-        self.shooter_motor.motor.setOpenLoopRampRate(1)
-        self.drivetrain_motorr1 = rev.CANSparkMax(5, rev.MotorType.kBrushless)
-        self.drivetrain_motorr2 = rev.CANSparkMax(13, rev.MotorType.kBrushless)
-        self.drivetrain_motorl1 = rev.CANSparkMax(7, rev.MotorType.kBrushless)
-        self.drivetrain_motorl2 = rev.CANSparkMax(17, rev.MotorType.kBrushless)
-        self.drivetrain_motorr2.follow(self.drivetrain_motorr1)
-        self.drivetrain_motorl2.follow(self.drivetrain_motorl1)
+        self.intake_arm_motor = PIDSparkMax(7)
 
+        self.shooter_motor = PIDSparkMax(16)
+        self.shooter_feeder_motor = ctre.TalonSRX(19)
+
+        self.drivetrain_motorr1 = rev.CANSparkMax(5, rev.MotorType.kBrushless)
+        self.drivetrain_motorr2 = rev.CANSparkMax(8, rev.MotorType.kBrushless)
+        self.drivetrain_motorl1 = rev.CANSparkMax(17, rev.MotorType.kBrushless)
+        self.drivetrain_motorl2 = rev.CANSparkMax(13, rev.MotorType.kBrushless)
 
         self.joystick_left = wpilib.Joystick(0)
         self.joystick_right = wpilib.Joystick(1)
 
+        self.controls = Controls(self.joystick_left, self.joystick_right)
+
+    def robotPeriodic(self):
+        wpilib.SmartDashboard.putNumber("ballCount", self.ball_count)
+
+    def teleopInit(self):
+        self.intake.lift()
 
     def teleopPeriodic(self):
+        # self.ball_counter_sm.engage()
+
+        self.handle_drive(self.controls)
+        self.handle_intake(self.controls)
+        self.handle_shooter(self.controls)
+
+    # Subsystem handlers
+    def handle_drive(self, controls: Controls):
+        """
+        Runs the control systems 
+        """
         if self.tank_drive:
-            self.drivetrain.tankDrive(self.joystick_left.getRawAxis(1), self.joystick_right.getRawAxis(2))
+            self.drivetrain.tankDrive(
+                controls.tank_drive_left, controls.tank_drive_right
+            )
         else:
-            self.drivetrain.arcadeDrive(-self.joystick_left.getRawAxis(1), self.joystick_left.getRawAxis(0), self.joystick_left.getRawAxis(2))
-        if self.joystick_left.getRawButton(1):
+            self.drivetrain.arcadeDrive(
+                controls.arcade_drive_forward,
+                controls.arcade_drive_turn,
+                controls.arcade_drive_twist,
+            )
+
+    def handle_intake(self, controls: Controls):
+        if controls.intake:
             self.intake_sm.engage()
         else:
-            # self.intake_lift_sm.engage()
             self.intake.lift()
-        if self.joystick_left.getRawButton(11):
+        if controls.reset_intake_arm_to_down:
             self.intake.reset_arm_encoders()
-        if self.joystick_left.getRawButton(3):
-            # self.shoot_sm.engage()
+
+    def handle_shooter(self, controls: Controls):
+        if controls.shoot:
+            # self.shoot_sm.fire()
             self.shooter.shoot()
+        if controls.feed:
+            self.shooter.feed()
+        if controls.aim:
+            self.drivetrain.vision_aim(*self.shooter.aim())
 
 
 if __name__ == "__main__":
