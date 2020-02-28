@@ -89,6 +89,12 @@ class Shooter:
         """
         self.feeder_motor_speed = self.feed_speed_setpoint
 
+    def backdrive(self):
+        """
+        Start the feeder to move the power cells towards the flywheel
+        """
+        self.feeder_motor_speed = -1
+
     def execute(self):
         # self.limelight.light(self.limelight_state)
         if abs(self.motor_rpm) < 200:

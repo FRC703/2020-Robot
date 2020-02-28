@@ -29,6 +29,10 @@ class Controls:
         return self.joystick.getRawButton(9)
 
     @property
+    def backdrive(self):
+        return self.joystick.getRawButton(12)
+
+    @property
     def intake(self):
         return self.joystick.getRawButton(10)
         # Test intake arm with the flipper on the bottom of the joystick

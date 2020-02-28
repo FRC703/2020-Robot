@@ -99,6 +99,7 @@ class Robot(magicbot.MagicRobot):
         if controls.intake:
             self.intake_sm.engage()
         else:
+            self.intake.stop_wheels()
             self.intake.lift()
         if controls.reset_intake_arm_to_down:
             self.intake.reset_arm_encoders()
@@ -109,6 +110,8 @@ class Robot(magicbot.MagicRobot):
             self.shooter.shoot()
         if controls.feed:
             self.shooter.feed()
+        if controls.backdrive:
+            self.shooter.backdrive()
         if controls.aim:
             self.drivetrain.vision_aim(*self.shooter.aim())
 
