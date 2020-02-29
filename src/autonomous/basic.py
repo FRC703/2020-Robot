@@ -16,11 +16,18 @@ class Basic(AutonomousStateMachine):
     shooter: Shooter
     intake_sm: IntakeRoutine
 
-    @timed_state(first=True, duration=8, next_state="reverse")
+    @timed_state(first=True, duration=2, next_state="shoot")
+    def aim(self):
+        self.shooter.limelight_state = 3
+        limelight_data = self.shooter.aim()
+        self.drivetrain.vision_aim(*limelight_data)
+
+    @timed_state(duration=8, next_state="reverse")
     def shoot(self):
         self.shooter.shoot()
 
     @timed_state(duration=2)
     def reverse(self):
+        self.shooter.limelight_state = 1
         self.intake_sm.engage()
         self.drivetrain.arcadeDrive(-0.5, 0, 0)

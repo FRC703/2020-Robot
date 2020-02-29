@@ -24,15 +24,6 @@ class ShootRoutine(StateMachine):
     def track(self):
         if self.shooter.limelight.valid_targets:
             limelight_data = self.shooter.aim()
-            y = limelight_data[1]
-            y_target = y
-            if y - 10 > y + 3.5:
-                if abs(y + 3.5) < 3:
-                    y_target = -3.5
-            else:
-                if abs(y - 10) < 3:
-                    y_target = 10
-                
             self.drivetrain.vision_aim(*limelight_data)
             if self.shooter.is_aimed:
                 self.next_state("shoot")

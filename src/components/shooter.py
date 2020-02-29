@@ -16,7 +16,7 @@ class Shooter:
 
     # target_rpm = tunable(-3500)
     feed_speed_setpoint = tunable(-1)
-    rpm_error = tunable(250)
+    rpm_error = tunable(300)
     x_aim_error = tunable(1.2)
     y_aim_error = tunable(2)
 
