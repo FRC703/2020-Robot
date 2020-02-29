@@ -26,9 +26,13 @@ class ShootRoutine(StateMachine):
             limelight_data = self.shooter.aim()
             self.drivetrain.vision_aim(*limelight_data)
             if self.shooter.is_aimed:
-                self.next_state("shoot")
+                self.next_state("backdrive")
         else:
             self.next_state("no_targets")
+
+    @timed_state(duration=.5, next_state="shoot")
+    def backdrive(self):
+        self.shooter.backdrive()
 
     @state
     def shoot(self):

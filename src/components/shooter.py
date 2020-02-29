@@ -100,7 +100,7 @@ class Shooter:
         """
         Start the feeder to move the power cells towards the flywheel
         """
-        self.feeder_motor_speed = -1
+        self.feeder_motor_speed = 1
 
     def execute(self):
         self.limelight.light(self.limelight_state)
@@ -113,7 +113,9 @@ class Shooter:
             abs(self.motor_rpm) > 500
             and abs(self.motor.rpm) > abs(self.motor_rpm) - self.rpm_error
         ) or self.feeder_motor_speed:
-            self.feeder_motor.set(ControlMode.PercentOutput, self.feed_speed_setpoint)
+            if not self.feeder_motor_speed:
+                self.feed()
+            self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)
         else:
             self.feeder_motor.set(ControlMode.PercentOutput, 0)
         # self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)
