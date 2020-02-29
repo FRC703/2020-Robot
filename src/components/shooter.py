@@ -14,16 +14,21 @@ class Shooter:
     motor_rpm = will_reset_to(0)
     feeder_motor_speed = will_reset_to(0)
 
-    target_rpm = tunable(-3500)
+    # target_rpm = tunable(-3500)
     feed_speed_setpoint = tunable(-1)
-    rpm_error = tunable(300)
-    x_aim_error = tunable(1)
-    y_aim_error = tunable(1)
+    rpm_error = tunable(250)
+    x_aim_error = tunable(1.2)
+    y_aim_error = tunable(2)
 
     motor: PIDSparkMax
     feeder_motor: TalonSRX
 
     camera_state: int
+
+    @property
+    def target_rpm(self):
+        _, y = self.aim()
+        return -1 * (5.232 * pow(y, 2) - 70.76 * y + 3300)
 
     def setup(self):
         """
@@ -49,8 +54,8 @@ class Shooter:
         """
         Will return the distances from the crosshair
         """
-        self.limelight_state = 3
-        self.camera_state = 1
+        # self.limelight_state = 3
+        self.camera_state = 0
         x = self.limelight.horizontal_offset
         y = self.limelight.vertical_offset
         return (x, y)
@@ -63,6 +68,8 @@ class Shooter:
         x, y = self.aim()
         if abs(x) > self.x_aim_error:
             return False
+        # if abs(y) > self.y_aim_error:
+        #     return False
         return True
 
     @property
@@ -96,7 +103,8 @@ class Shooter:
         self.feeder_motor_speed = -1
 
     def execute(self):
-        # self.limelight.light(self.limelight_state)
+        self.limelight.light(self.limelight_state)
+        # self.limelight.pipeline(self.limelight_state)
         if abs(self.motor_rpm) < 200:
             self.motor.stop()
         else:
@@ -120,7 +128,7 @@ class Shooter:
             "limelightLightState", True if self.limelight_state == 3 else False
         )
         wpilib.SmartDashboard.putBoolean("shooterReady", self.is_ready)
-        wpilib.SmartDashboard.putBoolean("isAimed", self.is_aimed)
+        # wpilib.SmartDashboard.putBoolean("isAimed", self.is_aimed)
         wpilib.SmartDashboard.putBoolean("targetsFound", self.limelight.valid_targets)
         wpilib.SmartDashboard.putNumber("shooterSpeedTarget", abs(self.motor_rpm))
         wpilib.SmartDashboard.putNumber("shooterMotorSpeed", abs(self.motor.rpm))

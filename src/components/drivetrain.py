@@ -12,11 +12,11 @@ class Drivetrain:
     motorl1: rev.CANSparkMax
     motorl2: rev.CANSparkMax
 
-    vision_dist_kP = tunable(0.3)
+    vision_dist_kP = tunable(0.15)
     vision_dist_kI = tunable(0)
     vision_dist_kD = tunable(0)
 
-    vision_turn_kP = tunable(0.06)
+    vision_turn_kP = tunable(0.09)
     vision_turn_kI = tunable(0)
     vision_turn_kD = tunable(0)
 
@@ -32,10 +32,13 @@ class Drivetrain:
     turn_multiplier = tunable(0.7)
 
     def vision_aim(self, x: float, y: float, aim_x=True, aim_y=True):
-        out = self.vision_pid.calculate(x)
+        # out = self.vision_pid.calculate(x)
+        # print(out)
+        out = self.vision_turn_kP * x
+        out = min(.25, max(out, -.25))
         self.turn = out
         self.twist_power = self.turn
-        # self.forward = self.vision_dist_kP * y
+        # self.forward = min(.5, max(self.vision_dist_kP * y, -.5))
 
     def setup(self):
         self.motorr1.restoreFactoryDefaults()
@@ -45,13 +48,13 @@ class Drivetrain:
         self.motorr2.follow(self.motorr1)
         self.motorl2.follow(self.motorl1)
         self.drive = wpilib.drive.DifferentialDrive(self.motorl1, self.motorr1)
-        self.vision_pid = wpilib.controller.PIDController(0.06, 0.1, 0.009)
-        self.vision_pid.setSetpoint(0)
-        self.vision_pid.calculate(0)
-        self.vision_pid.setTolerance(0.1)
+        # self.vision_pid = wpilib.controller.PIDController(0.006, 0.001, 0.0009)
+        # self.vision_pid.setSetpoint(0)
+        # self.vision_pid.calculate(0)
+        # self.vision_pid.setTolerance(0.1)
 
     def arcadeDrive(self, forward, turn, twist):
-        self.forward = forward * 1 if self.intake_is_front else -1
+        self.forward = forward * (-1 if self.intake_is_front else 1)
         self.turn = turn
         self.twist_power = twist
 

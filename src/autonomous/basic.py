@@ -9,7 +9,7 @@ from state_machines.intake_routine import IntakeRoutine
 
 class Basic(AutonomousStateMachine):
 
-    MODE_NAME = "Shoot and reverse"
+    MODE_NAME = "ShootReverse"
     DEFAULT = True
 
     drivetrain: Drivetrain

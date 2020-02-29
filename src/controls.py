@@ -34,13 +34,15 @@ class Controls:
 
     @property
     def intake(self):
-        return self.joystick.getRawButton(10)
-        # Test intake arm with the flipper on the bottom of the joystick
-        # return self.joystick.getRawAxis(3) < 0.5
+        return self.joystick.getRawButton(10) or self.joystick.getRawButton(3)
 
     @property
     def aim(self):
         return self.joystick.getRawButton(4)
+
+    @property
+    def shooter_front(self):
+        return self.joystick.getRawAxis(3) <= 0
 
     @property
     def reset_intake_arm_to_down(self):
