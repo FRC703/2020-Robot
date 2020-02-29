@@ -10,7 +10,7 @@ class Intake:
 
     motor: ctre.TalonSRX
     arm_motor: PIDSparkMax
-    intake_speed = 0
+    intake_speed = will_reset_to(0)
     intake_speed_in = -0.45
     intake_speed_out = 0.1
     intake_up = True
@@ -33,8 +33,8 @@ class Intake:
 
         Returns the angle that the motor for the intake will be turned on when lowering
         """
-        # return self._arm_angle_convert(self._intake_arm_motor_on_position)
-        return 30
+        return self._arm_angle_convert(self._intake_arm_motor_on_position) / 36
+        # return 30
 
     def _arm_angle_convert(self, angle: float) -> float:
         return angle / 3.6 * self._gear_ratio
@@ -79,6 +79,6 @@ class Intake:
         wpilib.SmartDashboard.putNumber("intakeSpeed", self.intake_speed)
         wpilib.SmartDashboard.putBoolean("intakeIn", self.intake_speed < -0.1)
         wpilib.SmartDashboard.putNumber(
-            "armPosition", self.arm_motor.motor.getEncoder().getPosition()
+            "armPosition", self.arm_position
         )
         wpilib.SmartDashboard.putNumber("armPower", self.arm_motor.rpm)
