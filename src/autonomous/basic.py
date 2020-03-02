@@ -26,8 +26,14 @@ class Basic(AutonomousStateMachine):
     def shoot(self):
         self.shooter.shoot()
 
-    @timed_state(duration=2)
+    @timed_state(duration=2, next_state="stop")
     def reverse(self):
         self.shooter.limelight_state = 1
-        self.intake_sm.engage()
+        # self.intake_sm.engage()
         self.drivetrain.arcadeDrive(-0.5, 0, 0)
+
+    @state
+    def stop(self):
+        self.drivetrain.arcadeDrive(0, 0, 0)
+        
+
