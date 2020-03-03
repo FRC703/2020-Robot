@@ -1,5 +1,5 @@
 from magicbot import AutonomousStateMachine
-from magicbot.state_machine import timed_state
+from magicbot.state_machine import timed_state, state
 
 from components.drivetrain import Drivetrain
 from components.shooter import Shooter
