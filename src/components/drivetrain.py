@@ -12,13 +12,17 @@ class Drivetrain:
     motorl1: rev.CANSparkMax
     motorl2: rev.CANSparkMax
 
+    using_vision = will_reset_to(False)
+
     vision_dist_kP = tunable(0.15)
     vision_dist_kI = tunable(0)
     vision_dist_kD = tunable(0)
 
-    vision_turn_kP = tunable(0.09)
-    vision_turn_kI = tunable(0)
+    vision_turn_kP = tunable(0.055)
+    vision_turn_kI = tunable(0.0001)
     vision_turn_kD = tunable(0)
+
+    vision_turn_integral_range = tunable(0.25)
 
     forward = will_reset_to(0)
     turn = will_reset_to(0)
@@ -27,18 +31,28 @@ class Drivetrain:
     tank_drive: bool
     twist: bool
 
+    vision_integral = 0
+
     intake_is_front = True
 
     turn_multiplier = tunable(0.7)
 
     def vision_aim(self, x: float, y: float, aim_x=True, aim_y=True):
+        self.using_vision = True
         # out = self.vision_pid.calculate(x)
         # print(out)
-        out = self.vision_turn_kP * x
-        out = min(.25, max(out, -.25))
+        self.vision_integral += x
+        p = self.vision_turn_kP * x
+        i = self.vision_turn_kI * self.vision_integral
+        out = min(.25, max(p + i, -.25))
         self.turn = out
         self.twist_power = self.turn
+        if abs(x) < self.vision_turn_integral_range:
+            self.vision_integral = 0
         # self.forward = min(.5, max(self.vision_dist_kP * y, -.5))
+
+    def reset_integral(self):
+        self.vision_integral = 0
 
     def setup(self):
         self.motorr1.restoreFactoryDefaults()
@@ -67,6 +81,8 @@ class Drivetrain:
             self.turn = left
 
     def execute(self):
+        if not self.using_vision:
+            self.reset_integral()
         if self.tank_drive:
             # Reusing forward and turn as left and right to reduce memory usage
             self.drive.tankDrive(self.forward, self.turn)
