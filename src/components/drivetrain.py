@@ -19,10 +19,10 @@ class Drivetrain:
     vision_dist_kD = tunable(0)
 
     vision_turn_kP = tunable(0.055)
-    vision_turn_kI = tunable(0.0001)
+    vision_turn_kI = tunable(0.0003)
     vision_turn_kD = tunable(0)
 
-    vision_turn_integral_range = tunable(0.25)
+    vision_turn_integral_range = tunable(0.1)
 
     forward = will_reset_to(0)
     turn = will_reset_to(0)
