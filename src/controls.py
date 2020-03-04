@@ -23,11 +23,11 @@ class Controls:
 
     @property
     def toggle_camera(self):
-        return self.joystick.getRawButtonPressed(12)
+        return self.joystick.getRawButtonPressed(9)
 
     @property
     def feed(self):
-        return self.joystick.getRawButton(9)
+        return self.joystick.getRawButton(11)
 
     @property
     def backdrive(self):

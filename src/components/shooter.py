@@ -55,7 +55,7 @@ class Shooter:
         Will return the distances from the crosshair
         """
         # self.limelight_state = 3
-        self.camera_state = 0
+        # self.camera_state = 0
         x = self.limelight.horizontal_offset
         y = self.limelight.vertical_offset
         return (x, y)

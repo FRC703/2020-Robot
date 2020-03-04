@@ -66,6 +66,10 @@ class Robot(magicbot.MagicRobot):
 
         self.controls = Controls(self.joystick_left, self.joystick_right)
 
+    def robotInit(self):
+        wpilib.CameraServer.launch()
+        return super().robotInit()
+
     def robotPeriodic(self):
         wpilib.SmartDashboard.putNumber("ballCount", self.ball_count)
 
@@ -114,6 +118,7 @@ class Robot(magicbot.MagicRobot):
             self.shooter.limelight_state = 3
             self.shoot_sm.fire()
         if controls.manual_shoot:
+            self.shooter.limelight_state = 3
             self.shooter.shoot()
         if controls.feed:
             self.shooter.feed()
