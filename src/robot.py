@@ -40,6 +40,8 @@ class Robot(magicbot.MagicRobot):
     tank_drive = False
     twist = True
 
+    camera_state = 1
+
     def shuffleboardInit(self):
         pass
 
@@ -64,6 +66,10 @@ class Robot(magicbot.MagicRobot):
 
         self.controls = Controls(self.joystick_left, self.joystick_right)
 
+    def robotInit(self):
+        wpilib.CameraServer.launch()
+        return super().robotInit()
+
     def robotPeriodic(self):
         wpilib.SmartDashboard.putNumber("ballCount", self.ball_count)
 
@@ -76,12 +82,17 @@ class Robot(magicbot.MagicRobot):
         self.handle_drive(self.controls)
         self.handle_intake(self.controls)
         self.handle_shooter(self.controls)
+        self.handle_vision(self.controls)
 
     # Subsystem handlers
     def handle_drive(self, controls: Controls):
         """
         Runs the control systems 
         """
+        if controls.shooter_front:
+            self.drivetrain.intake_is_front = False
+        else:
+            self.drivetrain.intake_is_front = True
         if self.tank_drive:
             self.drivetrain.tankDrive(
                 controls.tank_drive_left, controls.tank_drive_right
@@ -97,18 +108,30 @@ class Robot(magicbot.MagicRobot):
         if controls.intake:
             self.intake_sm.engage()
         else:
+            self.intake.stop_wheels()
             self.intake.lift()
         if controls.reset_intake_arm_to_down:
             self.intake.reset_arm_encoders()
 
     def handle_shooter(self, controls: Controls):
         if controls.shoot:
-            # self.shoot_sm.fire()
+            self.shooter.limelight_state = 3
+            self.shoot_sm.fire()
+        if controls.manual_shoot:
+            self.shooter.limelight_state = 3
             self.shooter.shoot()
         if controls.feed:
             self.shooter.feed()
+        if controls.backdrive:
+            self.shooter.backdrive()
         if controls.aim:
+            self.shooter.limelight_state = 3
             self.drivetrain.vision_aim(*self.shooter.aim())
+
+    def handle_vision(self, controls: Controls):
+        if controls.toggle_camera:
+            self.camera_state = 1 if self.camera_state else 0
+            # self.shooter.limelight.pipeline(self.camera_state)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,17 @@
 # ![703](docs/Phoenix2020.png) 2020 Robot
 
+## Deploying to robot
+
+```
+cd Scripts
+activate
+cd ..
+```
+
+```
+python src/robot.py deploy
+```
+
 ## Controls
 
 ### Standard Controls

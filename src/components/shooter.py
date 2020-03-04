@@ -10,18 +10,25 @@ from typing import Tuple
 
 
 class Shooter:
-    limelight_state = will_reset_to(3)
+    limelight_state = will_reset_to(1)
     motor_rpm = will_reset_to(0)
     feeder_motor_speed = will_reset_to(0)
 
-    target_rpm = tunable(-3500)
+    # target_rpm = tunable(-3500)
     feed_speed_setpoint = tunable(-1)
     rpm_error = tunable(300)
-    x_aim_error = tunable(1)
-    y_aim_error = tunable(1)
+    x_aim_error = tunable(1.2)
+    y_aim_error = tunable(2)
 
     motor: PIDSparkMax
     feeder_motor: TalonSRX
+
+    camera_state: int
+
+    @property
+    def target_rpm(self):
+        _, y = self.aim()
+        return -1 * (5.232 * pow(y, 2) - 70.76 * y + 3300)
 
     def setup(self):
         """
@@ -34,7 +41,7 @@ class Shooter:
         self.log()
 
         # Shooter motor configuration
-        self.motor.fromKu(0.0008, .6)  # P = 0.03, I = 0.05, D = 0.125
+        self.motor.fromKu(0.0008, 0.6)  # P = 0.03, I = 0.05, D = 0.125
         self.motor.setFF(1 / 5880)
         # self.motor.setFF(0)
         # self.motor.setPID(.0008, 0, 0)
@@ -47,7 +54,8 @@ class Shooter:
         """
         Will return the distances from the crosshair
         """
-        self.limelight_state = 3
+        # self.limelight_state = 3
+        # self.camera_state = 0
         x = self.limelight.horizontal_offset
         y = self.limelight.vertical_offset
         return (x, y)
@@ -60,6 +68,8 @@ class Shooter:
         x, y = self.aim()
         if abs(x) > self.x_aim_error:
             return False
+        # if abs(y) > self.y_aim_error:
+        #     return False
         return True
 
     @property
@@ -86,14 +96,26 @@ class Shooter:
         """
         self.feeder_motor_speed = self.feed_speed_setpoint
 
+    def backdrive(self):
+        """
+        Start the feeder to move the power cells towards the flywheel
+        """
+        self.feeder_motor_speed = 1
+
     def execute(self):
         self.limelight.light(self.limelight_state)
+        # self.limelight.pipeline(self.limelight_state)
         if abs(self.motor_rpm) < 200:
             self.motor.stop()
         else:
             self.motor.set(self.motor_rpm)
-        if abs(self.motor.rpm) > 3200 or self.feeder_motor_speed:
-            self.feeder_motor.set(ControlMode.PercentOutput, self.feed_speed_setpoint)
+        if (
+            abs(self.motor_rpm) > 500
+            and abs(self.motor.rpm) > abs(self.motor_rpm) - self.rpm_error
+        ) or self.feeder_motor_speed:
+            if not self.feeder_motor_speed:
+                self.feed()
+            self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)
         else:
             self.feeder_motor.set(ControlMode.PercentOutput, 0)
         # self.feeder_motor.set(ControlMode.PercentOutput, self.feeder_motor_speed)
@@ -108,7 +130,7 @@ class Shooter:
             "limelightLightState", True if self.limelight_state == 3 else False
         )
         wpilib.SmartDashboard.putBoolean("shooterReady", self.is_ready)
-        wpilib.SmartDashboard.putBoolean("isAimed", self.is_aimed)
+        # wpilib.SmartDashboard.putBoolean("isAimed", self.is_aimed)
         wpilib.SmartDashboard.putBoolean("targetsFound", self.limelight.valid_targets)
         wpilib.SmartDashboard.putNumber("shooterSpeedTarget", abs(self.motor_rpm))
         wpilib.SmartDashboard.putNumber("shooterMotorSpeed", abs(self.motor.rpm))

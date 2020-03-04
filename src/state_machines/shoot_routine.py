@@ -32,4 +32,7 @@ class ShootRoutine(StateMachine):
 
     @state
     def shoot(self):
-        self.shooter.shoot()
+        if not self.shooter.is_aimed:
+            self.next_state("track")
+        else:
+            self.shooter.shoot()

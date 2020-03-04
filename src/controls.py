@@ -1,3 +1,4 @@
+
 from wpilib import Joystick
 
 
@@ -8,21 +9,41 @@ class Controls:
 
     @property
     def shoot(self):
+        """
+        State machine based shoot
+        """
+        return self.joystick.getRawButton(1)
+
+    @property
+    def manual_shoot(self):
+        """
+        Just shoot and feed, no state machine
+        """
         return self.joystick.getRawButton(2)
 
     @property
+    def toggle_camera(self):
+        return self.joystick.getRawButtonPressed(9)
+
+    @property
     def feed(self):
-        return self.joystick.getRawButton(9)
+        return self.joystick.getRawButton(11)
+
+    @property
+    def backdrive(self):
+        return self.joystick.getRawButton(12)
 
     @property
     def intake(self):
-        return self.joystick.getRawButton(10)
-        # Test intake arm with the flipper on the bottom of the joystick
-        # return self.joystick.getRawAxis(3) < 0.5
+        return self.joystick.getRawButton(10) or self.joystick.getRawButton(3)
 
     @property
     def aim(self):
         return self.joystick.getRawButton(4)
+
+    @property
+    def shooter_front(self):
+        return self.joystick.getRawAxis(3) <= 0
 
     @property
     def reset_intake_arm_to_down(self):
